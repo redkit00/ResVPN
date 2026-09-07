@@ -1,0 +1,46 @@
+name: Build ResVPN IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - name: Dosyalari al
+        uses: actions/checkout@v4
+
+      - name: ZIP dosyasini ac
+        run: |
+          mkdir src
+          unzip "ResVPN_Windows_IPA_Paketi_v2.zip" -d src
+          ls -la src
+
+      - name: ResVPN derle
+        run: |
+          cd src
+
+          xcodebuild \
+            -project ResVPN.xcodeproj \
+            -target ResVPN \
+            -configuration Release \
+            -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CONFIGURATION_BUILD_DIR="$PWD/build" \
+            clean build
+
+      - name: IPA olustur
+        run: |
+          cd src
+          mkdir Payload
+          cp -R build/ResVPN.app Payload/
+          zip -qry ResVPN-unsigned.ipa Payload
+
+      - name: IPA yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ResVPN-IPA
+          path: src/ResVPN-unsigned.ipa
