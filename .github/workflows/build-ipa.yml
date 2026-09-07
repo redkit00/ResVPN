@@ -15,7 +15,7 @@ jobs:
         run: |
           rm -rf src
           mkdir src
-          unzip "ResVPN_Windows_IPA_Paketi_v3_DNS.zip" -d src
+          unzip "ResVPN_Windows_IPA_Paketi_v31_DNS_FIX.zip" -d src
           ls -la src
 
       - name: ResVPN v3 derle
